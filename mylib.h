@@ -16,10 +16,10 @@
 #include <time.h>
 #include <pthread.h>
 #include <unistd.h>
-#include<arpa/inet.h>
+#include <arpa/inet.h>
 
-#define HTONLL(x) ((1==htonl(1)) ? (x) : (((uint64_t)htonl((x) & 0xFFFFFFFFUL)) << 32) | htonl((uint32_t)((x) >> 32)))
-#define NTOHLL(x) ((1==ntohl(1)) ? (x) : (((uint64_t)ntohl((x) & 0xFFFFFFFFUL)) << 32) | ntohl((uint32_t)((x) >> 32)))
+#define HTONLL(x) ((1 == htonl(1)) ? (x) : (((uint64_t)htonl((x)&0xFFFFFFFFUL)) << 32) | htonl((uint32_t)((x) >> 32)))
+#define NTOHLL(x) ((1 == ntohl(1)) ? (x) : (((uint64_t)ntohl((x)&0xFFFFFFFFUL)) << 32) | ntohl((uint32_t)((x) >> 32)))
 
 /*SUPERVISOR*/
 
@@ -43,10 +43,8 @@ int sigalarm = 0;
 pipee *pipeserver;
 messaggio *l;
 messaggio elemento;
-//messaggio *stimemigliori;
 
 sig_atomic_t contsigin = 0;
-//sig_atomic_t contsigtstp = 0;
 
 //CLEANUP//
 void closeall()
@@ -55,7 +53,7 @@ void closeall()
 
     while (i < k)
     {
-		//mando un sigterm ai server per chiuderli in maniera adeguata
+        //mando un sigterm ai server per chiuderli in maniera adeguata
         if (kill(pidfigli[i], SIGTERM) == -1)
             perror("kill");
         i++;
@@ -72,7 +70,7 @@ void closeall()
     exit(0);
 }
 
-//stampo la lista di stime 
+//stampo la lista di stime
 void stampalista(messaggio *lista)
 {
     if (lista == NULL)
@@ -101,7 +99,7 @@ messaggio *listastima(messaggio *l, messaggio e)
     }
     else
     {
-		//controllo se l'ID del client e` gia presente in lista
+        //controllo se l'ID del client e` gia presente in lista
         int trovato = 0;
         messaggio *corr = l;
         while (corr != NULL && !trovato)
@@ -111,7 +109,7 @@ messaggio *listastima(messaggio *l, messaggio e)
             else
                 corr = corr->next;
         }
-        if (!trovato)//se non l'ho trovato allora faccio il normale inserimento in lista
+        if (!trovato) //se non l'ho trovato allora faccio il normale inserimento in lista
         {
             messaggio *new1 = (messaggio *)malloc(sizeof(messaggio));
             new1->client = e.client;
@@ -121,7 +119,7 @@ messaggio *listastima(messaggio *l, messaggio e)
             new1->next = l;
             l = new1;
         }
-        else//altrimenti incremento il numero di server a cui si collega e prendo la stima migliore 
+        else //altrimenti incremento il numero di server a cui si collega e prendo la stima migliore
         {
             corr->server++;
             if (corr->stima > e.stima)
@@ -147,22 +145,26 @@ long aggiorna(fd_set set, long fdmax);
 long nomeserver;
 int numpipe;
 
-static inline int readn(long fd, void *buf, size_t size) {
+static inline int readn(long fd, void *buf, size_t size)
+{
     size_t left = size;
     int r;
-    char *bufptr = (char*)buf;
-    while(left>0) {
-    if ((r=read((int)fd ,bufptr,left)) == -1) {
-        if (errno == EINTR) continue;
-        return -1;
-    }
-    if (r == 0) return 0;
-        left    -= r;
-    bufptr  += r;
+    char *bufptr = (char *)buf;
+    while (left > 0)
+    {
+        if ((r = read((int)fd, bufptr, left)) == -1)
+        {
+            if (errno == EINTR)
+                continue;
+            return -1;
+        }
+        if (r == 0)
+            return 0;
+        left -= r;
+        bufptr += r;
     }
     return size;
 }
-
 
 /*CLIENT*/
 
@@ -179,25 +181,30 @@ long *server;
 long *servercasuali(int p)
 {
     server = calloc(p, sizeof(long)); //alloco l'array con dimensione p
-    int casuale, i=0;
-   	int trovato=0,j=0,numserv=0;
+    int casuale, i = 0;
+    int trovato = 0, j = 0, numserv = 0;
 
-   	while(1){
-   		if(numserv==p) break;
-   		casuale=rand()%k;
-   		while(!trovato && j<p){
-   			if(server[i]==casuale) trovato=1;
-   			j++;
-   		}
-   		j=0;
-   		trovato=0;
-   		if(!trovato){
-   			server[i]=casuale+1;
-   			i++;
-   			numserv++;
-   		}
-   }
-   return server;
+    while (1)
+    {
+        if (numserv == p)
+            break;
+        casuale = rand() % k;
+        while (!trovato && j < p)
+        {
+            if (server[i] == casuale)
+                trovato = 1;
+            j++;
+        }
+        j = 0;
+        trovato = 0;
+        if (!trovato)
+        {
+            server[i] = casuale + 1;
+            i++;
+            numserv++;
+        }
+    }
+    return server;
 }
 
 #endif

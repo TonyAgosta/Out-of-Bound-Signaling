@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
     k = atoi(argv[1]); //numero di server da lanciare
-    
+
     //setto la gestione dei segnali
     struct sigaction t;
     memset(&t, 0, sizeof(t));
@@ -41,8 +41,8 @@ void server_run(int k)
 {
     int i = 0;
 
-    pidfigli = (pid_t *)calloc(k, sizeof(pid_t)); //alloco spazio per l'array in cui salvo i pid dei figli
-    pipeserver = (pipee *)calloc(k, sizeof(pipee));//alloco spazio per l'array in cui salvo i fd delle pipe con i server
+    pidfigli = (pid_t *)calloc(k, sizeof(pid_t));   //alloco spazio per l'array in cui salvo i pid dei figli
+    pipeserver = (pipee *)calloc(k, sizeof(pipee)); //alloco spazio per l'array in cui salvo i fd delle pipe con i server
     for (i = 0; i < k; i++)
     {
         if (pipe(pipeserver[i].fd) == -1)
@@ -67,7 +67,7 @@ void server_run(int k)
         }
         else
         { //sono nel padre
-            
+
             //rendo la read non bloccante
             int x = fcntl(pipeserver[i].fd[0], F_GETFL, 0);
             fcntl(pipeserver[i].fd[0], F_SETFL, x | O_NONBLOCK);
@@ -75,7 +75,7 @@ void server_run(int k)
         }
     }
     srand(time(NULL));
-    int numeroserver = rand() % k ;
+    int numeroserver = rand() % k;
     int s = -1;
     while (1)
     {
@@ -85,7 +85,7 @@ void server_run(int k)
         s = read(pipeserver[numeroserver].fd[0], &elemento, sizeof(messaggio));
         if (s > 0)
         {
-            printf("SUPERVISOR ESTIMATE %ld FOR %lx FROM %d\n", elemento.stima, elemento.client, numeroserver+1);
+            printf("SUPERVISOR ESTIMATE %ld FOR %lx FROM %d\n", elemento.stima, elemento.client, numeroserver + 1);
             fflush(NULL);
             l = listastima(l, elemento);
         }
@@ -123,4 +123,3 @@ static void gestoresigint(int signum)
         }
     }
 }
-
