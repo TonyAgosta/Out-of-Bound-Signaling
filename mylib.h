@@ -182,12 +182,10 @@ long *servercasuali(int p)
 {
     server = calloc(p, sizeof(long)); //alloco l'array con dimensione p
     int casuale, i = 0;
-    int trovato = 0, j = 0, numserv = 0;
+    int trovato = 0, j = 0;
 
-    while (1)
+    for (i = 0; i < p; i++)
     {
-        if (numserv == p)
-            break;
         casuale = rand() % k;
         while (!trovato && j < p)
         {
@@ -195,14 +193,14 @@ long *servercasuali(int p)
                 trovato = 1;
             j++;
         }
-        j = 0;
-        trovato = 0;
         if (!trovato)
         {
             server[i] = casuale + 1;
-            i++;
-            numserv++;
         }
+        else
+            i--;//recupero il ciclo perso
+        j = 0;
+        trovato = 0;
     }
     return server;
 }
