@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#Tony Agosta 544090
+
 echo "Inizio test"
 
 ./supervisor 8 &>supervisorout.log &
