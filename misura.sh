@@ -1,5 +1,7 @@
 #!/bin/bash/
 
+#Tony Agosta 544090
+
 echo "Inizia la misura"
 
 MAXERR=25              # una stima può differire al massimo di 25 unità
